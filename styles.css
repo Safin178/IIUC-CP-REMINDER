@@ -113,6 +113,23 @@ body {
     box-shadow: 0 24px 50px rgba(15, 23, 42, 0.06);
 }
 
+.contest-card.high-priority {
+    border: 2px solid #fbbf24;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    box-shadow: 0 24px 50px rgba(251, 191, 36, 0.15);
+}
+
+.priority-badge {
+    display: inline-block;
+    background: #fbbf24;
+    color: #78350f;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
 .contest-card::before {
     content: "";
     position: absolute;

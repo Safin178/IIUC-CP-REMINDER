@@ -71,6 +71,21 @@ function sortContestsByClosest(contests) {
   });
 }
 
+function isHighPriority(contestStartTime) {
+  const contestDate = new Date(contestStartTime);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const nextDay = new Date(today);
+  nextDay.setDate(nextDay.getDate() + 2);
+  
+  const contestDateOnly = new Date(contestDate.getFullYear(), contestDate.getMonth(), contestDate.getDate());
+  const tomorrowDateOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+  const nextDayDateOnly = new Date(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate());
+  
+  return contestDateOnly.getTime() === tomorrowDateOnly.getTime() || contestDateOnly.getTime() === nextDayDateOnly.getTime();
+}
+
 function getContestText(contest) {
   const title = contest.title || 'Untitled Contest';
   const startTime = formatStartTime(contest.startTime);
@@ -341,8 +356,12 @@ function renderContests(contests) {
     const duration = formatDuration(contest.duration || 0);
     const card = document.createElement('article');
     card.className = 'contest-card';
+    if (isHighPriority(contest.startTime)) {
+      card.classList.add('high-priority');
+    }
     card.innerHTML = `
       <div class="contest-capture">
+        ${isHighPriority(contest.startTime) ? '<div class="priority-badge">⚡ High Priority</div>' : ''}
         <div class="contest-brand">
           ${getPlatformLogo(contest.platform)}
           <h3 class="brand-name">${platformName}</h3>
