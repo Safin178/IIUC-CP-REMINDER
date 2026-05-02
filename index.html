@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contest Hive Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        integrity="sha512-BNaVSoUkBq5EoG3VZ5EWDQK3bs8e7isyzs/O0sRpXP7Xq5W0ZNca0d+I8Bq4BqwZBsxslfSn0X/yz3n1jI0a7Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <main class="app-shell">
+        <section class="hero">
+            <h1>Contest Hive Upcoming Contests</h1>
+            <p>Fetch upcoming contests from Contest Hive and download a JPG card for sharing.</p>
+        </section>
+
+        <section class="controls">
+            <label for="platform">Platform</label>
+            <select id="platform">
+                <option value="all">All platforms</option>
+                <option value="atcoder">Atcoder</option>
+                <option value="codechef">Codechef</option>
+                <option value="codeforces">Codeforces</option>
+                <option value="codeforces-gym">Codeforces Gym</option>
+                <option value="hackerearth">HackerEarth</option>
+                <option value="hackerrank">HackerRank</option>
+                <option value="leetcode">LeetCode</option>
+                <option value="toph">Toph</option>
+            </select>
+            <button id="fetch-btn" type="button">Fetch Contests</button>
+            <button id="download-btn" type="button" disabled>Download All JPGs</button>
+            <button id="copy-btn" type="button" disabled>Copy All Text</button>
+        </section>
+
+        <section id="status" class="status"></section>
+
+        <section id="results" class="results"></section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
