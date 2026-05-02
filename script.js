@@ -87,7 +87,41 @@ async function copyBlobToClipboard(blob) {
   if (!isClipboardImageSupported()) {
     throw new Error('Clipboard image copy is not supported in this browser.');
   }
-  await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+  } catch (error) {
+    if (blob.type === 'image/jpeg') {
+      try {
+        const pngBlob = await new Promise((resolve) => {
+          const image = new Image();
+          const objectUrl = URL.createObjectURL(blob);
+          image.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0);
+            canvas.toBlob((result) => {
+              URL.revokeObjectURL(objectUrl);
+              resolve(result);
+            }, 'image/png');
+          };
+          image.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            resolve(null);
+          };
+          image.src = objectUrl;
+        });
+        if (pngBlob) {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
+          return;
+        }
+      } catch (pngError) {
+        throw new Error('Clipboard does not support image formats (JPEG or PNG).');
+      }
+    }
+    throw error;
+  }
 }
 
 function getPlatformLogo(platform) {
@@ -418,3 +452,7 @@ async function copyText() {
 fetchBtn.addEventListener('click', fetchContests);
 downloadBtn.addEventListener('click', downloadJpg);
 copyBtn.addEventListener('click', copyText);
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchContests();
+});
