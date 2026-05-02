@@ -79,8 +79,8 @@ function getContestText(contest) {
   return `🔰 **${title}**\n\nStarting Time: **${datePart}** at **${timePart}**\n\nDuration: ${duration}\n\nContest Link: ${contest.url}`;
 }
 
-function isClipboardImageSupported() {
-  return !!navigator.clipboard && !!window.ClipboardItem && !!navigator.clipboard.write;
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
 async function copyBlobToClipboard(blob) {
@@ -294,18 +294,24 @@ async function generateCardPreview(card, contest) {
     };
 
     if (copyImageBtn) {
-      copyImageBtn.disabled = !isClipboardImageSupported();
-      copyImageBtn.onclick = async () => {
-        try {
-          if (!previewImg.previewBlob) {
-            throw new Error('No generated image available yet.');
+      if (isMobile()) {
+        copyImageBtn.disabled = false;
+        copyImageBtn.textContent = 'Download';
+        copyImageBtn.onclick = downloadBtn.onclick;
+      } else {
+        copyImageBtn.disabled = !isClipboardImageSupported();
+        copyImageBtn.onclick = async () => {
+          try {
+            if (!previewImg.previewBlob) {
+              throw new Error('No generated image available yet.');
+            }
+            await copyBlobToClipboard(previewImg.previewBlob);
+            setStatus(`Copied image for ${contest.title}.`, 'success');
+          } catch (error) {
+            setStatus('Unable to copy image: ' + error.message, 'error');
           }
-          await copyBlobToClipboard(previewImg.previewBlob);
-          setStatus(`Copied image for ${contest.title}.`, 'success');
-        } catch (error) {
-          setStatus('Unable to copy image: ' + error.message, 'error');
-        }
-      };
+        };
+      }
     }
   } catch (error) {
     previewStatus.textContent = 'Preview unavailable';
